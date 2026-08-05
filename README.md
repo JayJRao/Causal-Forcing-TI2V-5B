@@ -61,18 +61,11 @@ hf download zhuhz22/Causal-Forcing framewise/causal_forcing.pt --local-dir check
 ```
 
 ## Training
-<img width="4944" height="2154" alt="overview" src="https://github.com/user-attachments/assets/df96fae3-cecc-4915-9a14-d1a5f326074e" />
+#Stage1原始model就是Wan-5b，训练数据自己构建csv文件替换掉
+#Stage2先用ODE生成一些去噪轨迹，再训练ODE
 
 <details>
 <summary> Stage 1: Autoregressive Diffusion Training (Can skip by using our pretrained checkpoints. Click to expand.)</summary>
-
-First download the dataset (we provide a 6K toy dataset here):
-```bash
-hf download zhuhz22/Causal-Forcing-data  --local-dir dataset
-python utils/merge_and_get_clean.py
-```
-> If the download gets stuck, Ctrl^C and then resume it.
-
 
 Then train the AR-diffusion model:
 - Framewise:
