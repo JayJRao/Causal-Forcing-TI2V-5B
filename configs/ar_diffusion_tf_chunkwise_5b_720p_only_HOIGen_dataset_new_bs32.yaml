@@ -1,0 +1,57 @@
+i2v: true
+independent_first_frame: true
+
+generator_ckpt: /m2v_intern/raozejing/StreamingCode/Streaming5B/Causal-Forcing-ind/logs/ar_diffusion_chunkwise_5b_720p_only_HOIGen_dataset_new_bs32/checkpoint_model_013000/model.pt
+
+generator_fsdp_wrap_strategy: size
+real_score_fsdp_wrap_strategy: size
+fake_score_fsdp_wrap_strategy: size
+real_name: Wan2.2-TI2V-5B
+text_encoder_fsdp_wrap_strategy: size
+warp_denoising_step: true 
+ts_schedule: false
+num_train_timestep: 1000
+timestep_shift: 5.0
+guidance_scale: 5.0
+denoising_loss_type: flow
+mixed_precision: true
+seed: 0
+wandb_key: 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
+wandb_entity: zjrao-ucas
+wandb_project: Causal-Forcing-ind-new-TF
+sharding_strategy: hybrid_full
+lr: 1.0e-06
+lr_critic: 2.0e-07
+beta1: 0.0
+beta2: 0.999
+beta1_critic: 0.0
+beta2_critic: 0.999
+batch_size: 1
+ema_weight: 0.99
+ema_start_step: 2000000000
+total_batch_size: 32
+log_iters: 1000
+negative_prompt: '色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量，JPEG压缩残留，丑陋的，残缺的，多余的手指，画得不好的手部，画得不好的脸部，畸形的，毁容的，形态畸形的肢体，手指融合，静止不动的画面，杂乱的背景，三条腿，背景人很多，倒着走'
+dfake_gen_update_ratio: 5
+image_or_video_shape:
+- 1
+- 21
+- 48
+- 80
+- 44
+distribution_loss: dmd
+trainer: diffusion
+gradient_checkpointing: true
+num_frame_per_block: 4
+load_raw_video: true
+model_kwargs:
+  model_name: Wan2.2-TI2V-5B
+  local_attn_size: 21
+  timestep_shift: 5.0
+data_path: /m2v_intern/raozejing/StreamingCode/dataset/live_5s_pose_1_2_3_4_5_6_7_8_9_10_11_rzj_without_fabric_and_keep_half_shoes.csv
+teacher_forcing: true # TF/DF
+
+eval_interval: 500
+
+hand_weight: 1.0
+object_weight: 1.0

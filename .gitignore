@@ -1,0 +1,10 @@
+logs/
+vis/
+wandb/
+logdir/
+__pycache__/
+*.pyc
+*.pt
+*.ckpt
+*.safetensors
+.DS_Store

@@ -1,0 +1,38 @@
+generator_ckpt: /m2v_intern/zhangjiaming09/Video-Causal/Causal-Forcing/logs/ar_diffusion_tf_chunkwise_5b_720P_koala36m_merged_20260224011730_279043_lr2e-6/checkpoint_model_015000/model.pt
+generator_grad:
+  model: true
+denoising_step_list:
+- 1000
+- 750
+- 500
+- 250
+warp_denoising_step: true
+generator_task: causal_video
+generator_fsdp_wrap_strategy: size
+text_encoder_fsdp_wrap_strategy: size
+mixed_precision: true
+seed: 0
+wandb_host: https://api.wandb.ai
+wandb_key: 0ab0a1e8aceb8730a63d928fb9b82c477942bed5
+wandb_entity: jiamming-zhang
+wandb_project: VideoCasual-train
+sharding_strategy: hybrid_full
+lr: 1.0e-06
+beta1: 0.9
+beta2: 0.999
+data_path: /m2v_intern_v3/zhangjiaming09/Video-Causal-Dataset/ODE_Causal_chunkwise/merged_multi_ckpt/merged_20260409105433_74000
+batch_size: 1
+log_iters: 500
+image_or_video_shape:
+- 1
+- 21
+- 48
+- 44
+- 80
+trainer: ode
+gradient_checkpointing: true
+num_frame_per_block: 3
+model_kwargs:
+  model_name: Wan2.2-TI2V-5B
+  local_attn_size: 21
+  timestep_shift: 5.0
