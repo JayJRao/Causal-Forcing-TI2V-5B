@@ -38,15 +38,6 @@ Causal Forcing significantly outperforms Self Forcing in **both visual quality a
 https://github.com/user-attachments/assets/310f0cfa-e1bb-496d-8941-87f77b3271c0
 
 
-## 🔥 News
-- **2026.2.11** : We now support **I2V** generation! Feel free ro try it [here](#new-i2v)!
-- **2026.2.9** : [Infinity-RoPE](https://github.com/yesiltepe-hidir/infinity-rope) adopts Causal Forcing as one of the base models!
-- **2026.2.8** : [Deep Forcing](https://cvlab-kaist.github.io/DeepForcing/) adopts Causal Forcing as one of the base models!
-- **2026.2.7** : Causal Forcing now supports [Rolling Forcing](https://github.com/TencentARC/RollingForcing), enabling minute-level long video generation!
-- **2026.2.5** : Release causal consistency distillation (Preview) as substitute for ODE distillation, **free of generating ODE paired data**!
-- **2026.2.2** : The [paper](https://arxiv.org/abs/2602.02214), [project page](https://thu-ml.github.io/CausalForcing.github.io/), and code are released.
-
-
 ## Quick Start
 
 > The inference environment is identical to Self Forcing, so you can migrate directly using our configs and model.
@@ -63,54 +54,11 @@ python setup.py develop
 ```
 ### Download Checkpoints
 ```bash
-hf download Wan-AI/Wan2.1-T2V-1.3B  --local-dir wan_models/Wan2.1-T2V-1.3B
-hf download Wan-AI/Wan2.1-T2V-14B  --local-dir wan_models/Wan2.1-T2V-14B
+hf download Wan-AI/Wan2.2-TI2V-5B  --local-dir wan_models/Wan2.2-TI2V-5B
+#下面这俩1.3B的他们练好的权重 不用下
 hf download zhuhz22/Causal-Forcing chunkwise/causal_forcing.pt --local-dir checkpoints
 hf download zhuhz22/Causal-Forcing framewise/causal_forcing.pt --local-dir checkpoints
 ```
-
-### CLI Inference
-> We open-source both the frame-wise and chunk-wise models; the former is a setting that Self Forcing has chosen not to release.
-
-#### T2V
-Frame-wise model (**higher dynamic degree and more expressive, recommended**):
-```bash
-python inference.py \
-  --config_path configs/causal_forcing_dmd_framewise.yaml \
-  --output_folder output/framewise \
-  --checkpoint_path  checkpoints/framewise/causal_forcing.pt \
-  --data_path prompts/demos.txt \
-  --use_ema
-    # Note: this frame-wise config not in Self Forcing; if using its framework, migrate this config too.
-```
-
-Chunk-wise model (**more stable**):
-```bash
-python inference.py \
-  --config_path configs/causal_forcing_dmd_chunkwise.yaml \
-  --output_folder output/chunkwise \
-  --checkpoint_path checkpoints/chunkwise/causal_forcing.pt \
-  --data_path prompts/demos.txt
-```
-
-#### 🔥NEW: I2V
-> Our frame-wise setting natively supports I2V. You simply need to set the first latent initial frame as your conditional image. 
-
-```bash
-python inference.py \
-  --config_path configs/causal_forcing_dmd_framewise.yaml \
-  --output_folder output/framewise \
-  --checkpoint_path  checkpoints/framewise/causal_forcing.pt \
-  --data_path prompts/i2v \
-  --i2v \
-  --use_ema
-```
-
-
-### Minute-level Long Video Generation
-Built on [Rolling Forcing](https://github.com/TencentARC/RollingForcing), we implemented minute-level long video generation. See [here](./long_video) for the detail.
-
-[Infinity-RoPE](https://github.com/yesiltepe-hidir/infinity-rope) and [Deep Forcing](https://cvlab-kaist.github.io/DeepForcing/) also adopt Causal Forcing as one of their base models, enabling interactive (prompt-switchable) long video generation at the minute scale. You can also try them out at their repos.
 
 ## Training
 <img width="4944" height="2154" alt="overview" src="https://github.com/user-attachments/assets/df96fae3-cecc-4915-9a14-d1a5f326074e" />
