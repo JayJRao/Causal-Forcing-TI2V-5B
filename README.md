@@ -61,11 +61,11 @@ hf download zhuhz22/Causal-Forcing framewise/causal_forcing.pt --local-dir check
 ```
 
 ## Training
-#Stage1原始model就是Wan-5b，训练数据自己构建csv文件替换掉
-#Stage2先用ODE生成一些去噪轨迹，再训练ODE
+# Stage1原始model就是Wan-5b，训练数据自己构建csv文件替换掉
+# Stage2先用ODE生成一些去噪轨迹，再训练ODE
 
 <details>
-<summary> Stage 1: Autoregressive Diffusion Training (Can skip by using our pretrained checkpoints. Click to expand.)</summary>
+<summary> Stage 1: Autoregressive Diffusion Training </summary>
 
 Then train the AR-diffusion model:
 - Framewise:
@@ -88,20 +88,14 @@ Then train the AR-diffusion model:
     --logdir logs/ar_diffusion_chunkwise
   ```
 
-> We recommend training no less than 2K steps, and more steps (e.g., 5~10K) will lead to better performance.
+> We recommend training no less than 8K steps, and more steps (e.g., 10~20K) will lead to better performance.
 
 
 </details>
 
 
 <details>
-<summary> Stage 2: Causal ODE Initialization (Can skip by using our pretrained checkpoints. Click to expand.)</summary>
-
-If you have skipped Stage 1, you need to download the pretrained models:
-```bash
-hf download zhuhz22/Causal-Forcing framewise/ar_diffusion.pt --local-dir checkpoints
-hf download zhuhz22/Causal-Forcing chunkwise/ar_diffusion.pt --local-dir checkpoints
-```
+<summary> Stage 2: Causal ODE Initialization </summary>
 
 In this stage, first generate ODE paired data:
 ```bash
@@ -128,13 +122,6 @@ python utils/create_lmdb_iterative.py \
   --lmdb_path dataset/ODE6KCausal_chunkwise
 ```
 
-Or you can also directly download our prepared dataset (~300G):
-```bash
-hf download zhuhz22/Causal-Forcing-data  --local-dir dataset
-python utils/merge_lmdb.py
-```
-> If the download gets stuck, Ctrl^C and then resume it.
-
 
 And then train ODE initialization models:
 - Frame-wise:
@@ -156,44 +143,20 @@ And then train ODE initialization models:
     --logdir logs/causal_ode_chunkwise
   ```
 
-> We recommend training no less than 1K steps, and more steps (e.g., 5~10K) will lead to better performance.
+> We recommend training no less than 10K steps, and more steps (e.g., 10~20K) will lead to better performance.
 
 </details>
 
 
 
 <details>
-<summary> 🔥 NEW: Substitute for Stage 2, without creating ODE paired data: Causal CD (Click to expand.)</summary>     
 <br>
-Since creating ODE-paired data is very time-consuming, we also provide an alternative here that achieves the same effect as ODE distillation while requiring only ground-truth data.
 
-**Note:** The current CD is still in an early stage, with many suboptimal implementations in both the algorithm and (especially) infra efficiency. We’ll continue iterating and improving it.
-
-- Frame-wise:
-  ```bash
-  torchrun --nnodes=8 --nproc_per_node=8 --rdzv_id=5235 \
-    --rdzv_backend=c10d \
-    --rdzv_endpoint $MASTER_ADDR \
-    train.py \
-    --config_path configs/causal_cd_framewise.yaml \
-    --logdir logs/causal_cd_framewise
-  ```
-- Chunk-wise:
-  ```bash
-  torchrun --nnodes=8 --nproc_per_node=8 --rdzv_id=5235 \
-    --rdzv_backend=c10d \
-    --rdzv_endpoint $MASTER_ADDR \
-    train.py \
-    --config_path configs/causal_cd_chunkwise.yaml \
-    --logdir logs/causal_cd_chunkwise
-  ```
-
-> We recommend training no less than 1K steps, and more steps (e.g., 3~5K) will lead to better performance.
 </details>
 
 
 
-### Stage 3: DMD
+### Stage 3: DMD 
 
 > This stage is compatible with Self Forcing training, so you can migrate seamlessly by using our configs and checkpoints.
 
@@ -254,16 +217,3 @@ Such models are the final models used to generate videos.
 
 For more details, see [here](https://zhuanlan.zhihu.com/p/2002114039493461457). (currently in Chinese)
 
-## Acknowledgements
-This codebase is built on top of the open-source implementation of [CausVid](https://github.com/tianweiy/CausVid), [Self Forcing](https://github.com/guandeh17/Self-Forcing), [Rolling Forcing](https://github.com/TencentARC/RollingForcing) and the [Wan2.1](https://github.com/Wan-Video/Wan2.1) repo.
-
-## References
-If you find the method useful, please cite
-```
-@article{zhu2026causal,
-  title={Causal Forcing: Autoregressive Diffusion Distillation Done Right for High-Quality Real-Time Interactive Video Generation},
-  author={Zhu, Hongzhou and Zhao, Min and He, Guande and Su, Hang and Li, Chongxuan and Zhu, Jun},
-  journal={arXiv preprint arXiv:2602.02214},
-  year={2026}
-}
-```
